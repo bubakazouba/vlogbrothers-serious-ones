@@ -1,0 +1,20 @@
+# intermediate/scratch data — not needed to serve or rebuild the site
+raw_flat.jsonl
+flat_err.log
+candidates.jsonl
+details.jsonl
+cleaned.json
+verdicts_merged.json
+verdict_*.json
+slice_*.json
+sumbatch_*.json
+summ_*.json
+clean.py
+clean2.py
+fetch.py
+*.log
+*.err
+t.json
+t.err
+err_test.log
+preview.png

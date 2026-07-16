@@ -41,6 +41,7 @@ cat_counts = Counter(v['category'] for v in videos)
 # build data for JS
 data = [{
     'id': v['id'], 'title': v['title'], 'summary': v['summary'],
+    'bullets': v.get('bullets', []),
     'category': v['category'], 'year': v['year'], 'date': fmt_date(v['upload_date']),
     'ts': v['upload_date'] or '0', 'views': v['view_count'] or 0,
     'viewsFmt': fmt_views(v['view_count']), 'dur': fmt_dur(v['duration']),
@@ -132,9 +133,19 @@ html_out = f'''<!DOCTYPE html>
   .meta {{ display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--faint); flex-wrap:wrap; }}
   .badge {{ padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color:#fff; }}
   .title {{ font-size: 16.5px; font-weight: 700; line-height: 1.28; letter-spacing:-0.01em; }}
-  .summary {{ font-size: 13.5px; color: var(--muted); flex: 1; }}
-  .summary.clamp {{ display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }}
+  .summary {{ font-size: 13.5px; color: var(--muted); }}
+  .summary.clamp {{ display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }}
   .more {{ align-self: flex-start; background:none; border:none; color: var(--accent); font-size:12.5px; cursor:pointer; padding:0; font-weight:600; }}
+  .keypts {{ margin: 2px 0 0; padding: 12px 0 4px; border-top: 1px solid var(--border); }}
+  .keypts .khead {{ font-size: 11px; letter-spacing:.08em; text-transform: uppercase; color: var(--faint); font-weight:700; margin-bottom: 8px; }}
+  .keypts ul {{ margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }}
+  .keypts li {{ font-size: 13px; color: var(--text); line-height: 1.4; padding-left: 16px; position: relative; }}
+  .keypts li::before {{ content: ''; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }}
+  .toggle {{ align-self: flex-start; background: var(--bg2); border: 1px solid var(--border); color: var(--muted); font-size:12px; cursor:pointer; padding: 5px 11px; border-radius: 8px; font-weight:600; display:flex; align-items:center; gap:6px; transition: all .12s; margin-top: auto; }}
+  .toggle:hover {{ color: var(--text); border-color: var(--faint); }}
+  .toggle .arw {{ transition: transform .15s; font-size: 10px; }}
+  .toggle.open .arw {{ transform: rotate(180deg); }}
+  .hidden {{ display: none !important; }}
   .foot {{ display:flex; gap:14px; color: var(--faint); font-size:12px; margin-top:2px; }}
 
   .empty {{ text-align:center; color: var(--muted); padding: 80px 20px; }}
@@ -223,23 +234,32 @@ function esc(s){{ return (s||'').replace(/[&<>"]/g, c=>({{'&':'&amp;','<':'&lt;'
 
 function cardHTML(v) {{
   const color = CATS[v.category] || '#888';
-  return `<a class="card" href="${{v.url}}" target="_blank" rel="noopener">
-    <div class="thumb">
+  const bullets = (v.bullets && v.bullets.length)
+    ? `<div class="keypts hidden">
+         <div class="khead">Key points</div>
+         <ul>${{v.bullets.map(b=>`<li>${{esc(b)}}</li>`).join('')}}</ul>
+       </div>
+       <button class="toggle" onclick="const c=this.closest('.card');const k=c.querySelector('.keypts');const s=c.querySelector('.summary');k.classList.toggle('hidden');const open=!k.classList.contains('hidden');this.classList.toggle('open',open);s.classList.toggle('clamp',!open);this.querySelector('.lbl').textContent=open?'Hide key points':'5 key points';">
+         <span class="lbl">5 key points</span><span class="arw">▼</span>
+       </button>`
+    : '';
+  return `<div class="card">
+    <a class="thumb" href="${{v.url}}" target="_blank" rel="noopener">
       <img loading="lazy" src="${{v.thumb}}" alt="">
       ${{v.dur?`<span class="dur">${{v.dur}}</span>`:''}}
       <span class="play"><svg viewBox="0 0 68 48"><path fill="#f00" d="M66.5 7.7a8 8 0 0 0-5.6-5.7C56 .6 34 .6 34 .6s-22 0-26.9 1.4A8 8 0 0 0 1.5 7.7 84 84 0 0 0 0 24a84 84 0 0 0 1.5 16.3 8 8 0 0 0 5.6 5.7C12 47.4 34 47.4 34 47.4s22 0 26.9-1.4a8 8 0 0 0 5.6-5.7A84 84 0 0 0 68 24a84 84 0 0 0-1.5-16.3z"/><path fill="#fff" d="M27 34l18-10-18-10z"/></svg></span>
-    </div>
+    </a>
     <div class="body">
       <div class="meta">
         <span class="badge" style="background:${{color}}">${{esc(v.category)}}</span>
         <span>${{v.date}}</span>
+        <span>· ▶ ${{v.viewsFmt}}</span>
       </div>
-      <div class="title">${{esc(v.title)}}</div>
+      <a class="title" href="${{v.url}}" target="_blank" rel="noopener" style="color:inherit">${{esc(v.title)}}</a>
       <div class="summary clamp">${{esc(v.summary)}}</div>
-      ${{v.summary.length > 260 ? `<button class="more" onclick="event.preventDefault();event.stopPropagation();this.previousElementSibling.classList.toggle('clamp');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>` : ''}}
-      <div class="foot"><span>▶ ${{v.viewsFmt}} views</span></div>
+      ${{bullets}}
     </div>
-  </a>`;
+  </div>`;
 }}
 
 function render() {{

@@ -133,6 +133,8 @@ html_out = f'''<!DOCTYPE html>
   .badge {{ padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color:#fff; }}
   .title {{ font-size: 16.5px; font-weight: 700; line-height: 1.28; letter-spacing:-0.01em; }}
   .summary {{ font-size: 13.5px; color: var(--muted); flex: 1; }}
+  .summary.clamp {{ display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }}
+  .more {{ align-self: flex-start; background:none; border:none; color: var(--accent); font-size:12.5px; cursor:pointer; padding:0; font-weight:600; }}
   .foot {{ display:flex; gap:14px; color: var(--faint); font-size:12px; margin-top:2px; }}
 
   .empty {{ text-align:center; color: var(--muted); padding: 80px 20px; }}
@@ -178,7 +180,7 @@ html_out = f'''<!DOCTYPE html>
 <footer>
   <div class="wrap">
     Unofficial fan-made archive. Videos, titles, and thumbnails belong to <a href="https://www.youtube.com/@vlogbrothers" target="_blank" rel="noopener">Vlogbrothers</a> (John &amp; Hank Green).
-    Summaries condensed from each video's own description. Not affiliated with or endorsed by the Green brothers.
+    Summaries written from each video's actual transcript. Not affiliated with or endorsed by the Green brothers.
   </div>
 </footer>
 
@@ -233,7 +235,8 @@ function cardHTML(v) {{
         <span>${{v.date}}</span>
       </div>
       <div class="title">${{esc(v.title)}}</div>
-      <div class="summary">${{esc(v.summary)}}</div>
+      <div class="summary clamp">${{esc(v.summary)}}</div>
+      ${{v.summary.length > 260 ? `<button class="more" onclick="event.preventDefault();event.stopPropagation();this.previousElementSibling.classList.toggle('clamp');this.textContent=this.textContent==='Show more'?'Show less':'Show more'">Show more</button>` : ''}}
       <div class="foot"><span>▶ ${{v.viewsFmt}} views</span></div>
     </div>
   </a>`;

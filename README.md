@@ -17,7 +17,7 @@ It is built from their most-watched uploads and then **strictly filtered** to ke
 1. Pulled the full channel video list (~2,460 videos) with `yt-dlp`.
 2. Took the top ~320 most-viewed as candidates and fetched each video's description + metadata.
 3. Applied a strict "big ideas only" classifier to drop comedy/filler and keep substantive essays.
-4. Condensed each kept video's own description into a clean 1–2 sentence summary.
+4. Downloaded each kept video's **transcript** and wrote a real 2–4 sentence summary of what the video actually says — its argument, examples, and conclusions (not just the YouTube description).
 5. Rendered a single static `index.html` (no build step, no dependencies).
 
 ## Disclaimer

@@ -31,6 +31,9 @@ CATS = {
     'Mortality & Grief':    '#8892b0',
     'Mental Health':        '#3ec6c6',
     'Global Health & TB':   '#c0553b',
+    'Comedy & Fun':         '#e8b04b',
+    'Community & Meta':     '#7d8a9c',
+    'Books & Writing':      '#b47cd6',
 }
 
 total_views = sum(v['view_count'] or 0 for v in videos)
@@ -117,7 +120,7 @@ html_out = f'''<!DOCTYPE html>
   .chip.active {{ color: #fff; border-color: transparent; font-weight: 600; }}
   .chip .cnt {{ opacity:.65; font-size:12px; }}
 
-  .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; padding: 22px 0 60px; }}
+  .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; padding: 22px 0 60px; align-items: start; }}
   .card {{
     background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
     display: flex; flex-direction: column; transition: transform .13s, border-color .13s, background .13s;
@@ -141,7 +144,7 @@ html_out = f'''<!DOCTYPE html>
   .keypts ul {{ margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }}
   .keypts li {{ font-size: 13px; color: var(--text); line-height: 1.4; padding-left: 16px; position: relative; }}
   .keypts li::before {{ content: ''; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }}
-  .toggle {{ align-self: flex-start; background: var(--bg2); border: 1px solid var(--border); color: var(--muted); font-size:12px; cursor:pointer; padding: 5px 11px; border-radius: 8px; font-weight:600; display:flex; align-items:center; gap:6px; transition: all .12s; margin-top: auto; }}
+  .toggle {{ align-self: flex-start; background: var(--bg2); border: 1px solid var(--border); color: var(--muted); font-size:12px; cursor:pointer; padding: 5px 11px; border-radius: 8px; font-weight:600; display:flex; align-items:center; gap:6px; transition: all .12s; margin-top: 4px; }}
   .toggle:hover {{ color: var(--text); border-color: var(--faint); }}
   .toggle .arw {{ transition: transform .15s; font-size: 10px; }}
   .toggle.open .arw {{ transform: rotate(180deg); }}
@@ -235,12 +238,12 @@ function esc(s){{ return (s||'').replace(/[&<>"]/g, c=>({{'&':'&amp;','<':'&lt;'
 function cardHTML(v) {{
   const color = CATS[v.category] || '#888';
   const bullets = (v.bullets && v.bullets.length)
-    ? `<div class="keypts hidden">
+    ? `<div class="keypts">
          <div class="khead">Key points</div>
          <ul>${{v.bullets.map(b=>`<li>${{esc(b)}}</li>`).join('')}}</ul>
        </div>
-       <button class="toggle" onclick="const c=this.closest('.card');const k=c.querySelector('.keypts');const s=c.querySelector('.summary');k.classList.toggle('hidden');const open=!k.classList.contains('hidden');this.classList.toggle('open',open);s.classList.toggle('clamp',!open);this.querySelector('.lbl').textContent=open?'Hide key points':'5 key points';">
-         <span class="lbl">5 key points</span><span class="arw">▼</span>
+       <button class="toggle open" onclick="const c=this.closest('.card');const k=c.querySelector('.keypts');const s=c.querySelector('.summary');k.classList.toggle('hidden');const open=!k.classList.contains('hidden');this.classList.toggle('open',open);s.classList.toggle('clamp',!open);this.querySelector('.lbl').textContent=open?'Hide key points':'5 key points';">
+         <span class="lbl">Hide key points</span><span class="arw">▼</span>
        </button>`
     : '';
   return `<div class="card">
@@ -256,7 +259,7 @@ function cardHTML(v) {{
         <span>· ▶ ${{v.viewsFmt}}</span>
       </div>
       <a class="title" href="${{v.url}}" target="_blank" rel="noopener" style="color:inherit">${{esc(v.title)}}</a>
-      <div class="summary clamp">${{esc(v.summary)}}</div>
+      <div class="summary">${{esc(v.summary)}}</div>
       ${{bullets}}
     </div>
   </div>`;

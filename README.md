@@ -6,8 +6,9 @@ It is built from their most-watched uploads and then **strictly filtered** to ke
 
 ## What's inside
 
-- **127 essays** spanning **2008–2026**
-- **11 topic categories** (Politics & Society, Media & Culture, Science & Education, Economics & Money, History & Geopolitics, Personal Reflection, Philosophy & Meaning, Health Care, Mortality & Grief, Mental Health, Global Health & TB)
+- **178 videos** spanning **2008–2026** — the curated serious back catalogue plus **every 2026 upload** (52 videos, including the lighter ones)
+- **14 topic categories** (Politics & Society, Media & Culture, Science & Education, Economics & Money, History & Geopolitics, Personal Reflection, Philosophy & Meaning, Health Care, Mortality & Grief, Mental Health, Global Health & TB, Books & Writing, Community & Meta, Comedy & Fun)
+- **5 key-point bullets** per video (main arguments, facts, figures), shown expanded by default
 - Live **search** across titles and summaries
 - **Filter** by topic and **sort** by newest / oldest / most-viewed / A–Z
 - Each card links straight to the video on YouTube
